@@ -3,16 +3,18 @@
 Fast offline web tool to convert Sigma rules and SIEM queries across multiple SIEM platforms and EDR tools.
 
 ## Features
-- **Sigma Rule Conversion**: Convert Sigma rules to various SIEM query languages (Splunk SPL, Elastic EQL, Azure KQL, etc.)
-- **Query Translation**: Translate queries between different SIEM platforms
-- **Batch IOC Conversion**: Convert lists of IOCs (IPs, domains, hashes) into SIEM-specific query formats
-- **Offline Functionality**: Fully client-side, no server required
-- **Dockerized**: Easy deployment with Docker
-- **Extensible**: Modular architecture for adding new conversion operators
-- **User-Friendly UI**: Clean interface for quick conversions
-- **Syntax Highlighting**: Output is highlighted for better readability
-- **Export Options**: Save converted queries in various formats (TXT, JSON, etc.)
-- **Ai Assisted Suggestions**: Online or Custom Offline LLM support for query optimization.
+| Feature | Description |
+| --- | --- |
+| Sigma Rule Conversion | Convert Sigma rules to various SIEM query languages (Splunk SPL, Elastic EQL) |
+| Query Translation | Translate queries between different SIEM platforms |
+| Batch IOC Conversion | Convert lists of IOCs (IPs, domains, hashes) into SIEM-specific query formats |
+| Offline Functionality | Fully client-side, no server required |
+| Dockerized | Easy deployment with Docker |
+| Extensible | Modular architecture for adding new conversion operators |
+| User-Friendly UI | Clean interface for quick conversions |
+| Syntax Highlighting | Output is highlighted for better readability |
+| Export Options | Save converted queries in various formats (TXT, JSON, etc.) |
+| Ai Assisted Suggestions | Online or Custom Offline LLM support for query optimization. |
  
 
 ## Quick Start

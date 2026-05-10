@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="QueryCast — Universal SIEM Query Translator. Convert Sigma rules, IOCs, and queries across Splunk, Elastic, KQL, Carbon Black, Velociraptor, and more.">
+    <title>QueryCast — Universal SIEM Query Translator</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <!-- Bootstrap Icons (CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Highlight.js theme (CDN) – auto dark/light via overrides in CSS -->
+    <link id="hljs-theme" rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+    <!-- App styles -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- 
+     HEADER
+ -->
+<header id="app-header">
+    <!-- Brand -->
+    <div class="header-brand">
+        <svg class="header-logo" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="QueryCast logo">
+            <rect width="32" height="32" rx="6" fill="#4dabf7"/>
+            <path d="M 8 6 L 24 16 L 8 26" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+            <div class="header-title">QueryCast</div>
+            <div class="header-subtitle">Universal Query Translator</div>
+        </div>
+    </div>
+
+    <div class="header-spacer"></div>
+
+    <!-- Keyboard hint -->
+    <span class="shortcut-hint">Ctrl+Enter</span>
+
+    <!-- Accent color picker -->
+    <div class="accent-picker-wrap" title="Change accent color">
+        <label class="accent-picker-btn" for="accent-color-input" aria-label="Change accent color">
+            <i class="bi bi-palette"></i>
+            <span class="accent-picker-swatch" id="accent-swatch"></span>
+        </label>
+        <input type="color" id="accent-color-input" class="accent-color-input">
+        <button class="accent-reset-btn" id="accent-reset" title="Reset accent color to default"><i class="bi bi-arrow-counterclockwise"></i></button>
+    </div>
+
+    <!-- Theme toggle -->
+    <button class="header-btn" id="btn-theme" title="Toggle theme" aria-label="Toggle theme">
+        <i class="bi bi-sun" id="theme-icon"></i>
+    </button>
+</header>
+
+<!-- 
+     MAIN LAYOUT  (3 columns: Ops | Recipe | IO)
+ -->
+<div id="app-layout">
+
+    <!-- ── LEFT: Operations Panel ───────────────────────────────── -->
+    <aside id="ops-panel">
+        <div class="ops-panel-header">
+            <div class="ops-panel-title">Operations</div>
+            <div class="ops-search-wrap">
+                <i class="bi bi-search"></i>
+                <input type="search" id="ops-search" placeholder="Search operators…" autocomplete="off">
+            </div>
+        </div>
+        <div id="ops-list" role="list" aria-label="Available operators">
+            <!-- Rendered by app.js -->
+        </div>
+    </aside>
+
+    <div id="resize-ops-recipe" class="resize-handle-v" title="Resize Operations / Recipe"></div>
+
+    <!-- ── CENTER: Recipe Panel ─────────────────────────────────── -->
+    <section id="recipe-panel">
+        <div class="recipe-panel-header">
+            <i class="bi bi-list-ol" style="color:var(--text-muted);font-size:12px;"></i>
+            <span class="recipe-panel-title">Recipe</span>
+            <span id="recipe-count" style="display:none"></span>
+            <button class="recipe-clear-btn" id="btn-clear-recipe" title="Clear all recipe steps">
+                <i class="bi bi-trash"></i> Clear
+            </button>
+        </div>
+        <div id="recipe-dropzone" class="recipe-dropzone" aria-label="Drop operators here">
+            <div id="recipe-list" role="list" aria-label="Recipe steps">
+                <!-- Rendered by app.js -->
+            </div>
+        </div>
+    </section>
+
+    <div id="resize-recipe-io" class="resize-handle-v" title="Resize Recipe / IO"></div>
+
+    <!-- ── RIGHT: Input / Output Panel ─────────────────────────── -->
+    <div id="io-panel">
+
+        <!-- Input Pane -->
+        <div class="io-pane" id="input-pane">
+            <div class="io-pane-header">
+                <i class="bi bi-code-slash" style="color:var(--text-muted);font-size:12px;"></i>
+                <span class="io-pane-title">Input</span>
+                <button class="io-action-btn" id="btn-ioc-converter" title="Convert a list of IOCs into a Sigma rule">
+                    <i class="bi bi-shield-exclamation"></i> IOC → Sigma
+                </button>
+                <button class="io-action-btn" id="btn-sigma-db" title="Browse and load Sigma rules from the community database">
+                    <i class="bi bi-database"></i> Sigma DB
+                </button>
+                <button class="io-action-btn" id="btn-sigma-help" title="Learn Sigma rule structure and best practices" onclick="window.querycastSigmaHelpOpen && window.querycastSigmaHelpOpen()">
+                    <i class="bi bi-question-circle"></i> Help
+                </button>
+                <button class="io-action-btn" id="btn-load-sample" title="Load a sample Sigma rule">
+                    <i class="bi bi-file-earmark-code"></i> Sample
+                </button>
+                <button class="io-action-btn" id="btn-clear-input" title="Clear input">
+                    <i class="bi bi-x-lg"></i> Clear
+                </button>
+                <button class="io-action-btn" id="btn-upload" title="Upload Sigma rule file" onclick="document.getElementById('file-upload').click()">
+                    <i class="bi bi-upload"></i> Upload
+                </button>
+                <input type="file" id="file-upload" accept=".yml,.yaml,.txt" style="display:none">
+            </div>
+            <div class="io-body">
+                <textarea id="input-textarea" class="io-textarea"
+                    placeholder="Paste your source rule/query here…"
+                    spellcheck="false"
+                    autocorrect="off"
+                    autocapitalize="off"></textarea>
+            </div>
+        </div>
+
+        <!-- Drag divider -->
+        <div class="io-divider" id="io-resize" title="Drag to resize panels"></div>
+
+        <!-- Output Pane -->
+        <div class="io-pane" id="output-pane">
+            <div class="io-pane-header">
+                <i class="bi bi-braces" style="color:var(--text-muted);font-size:12px;"></i>
+                <span class="io-pane-title">Output</span>
+                <button class="io-action-btn" id="btn-copy" title="Copy output to clipboard">
+                    <i class="bi bi-clipboard"></i> Copy
+                </button>
+                <button class="io-action-btn" id="btn-download" title="Download output as file">
+                    <i class="bi bi-download"></i> Download
+                </button>
+                <button class="io-action-btn ai-rainbow-btn" id="btn-ai-query" title="Ask AI to explain or review this query">
+                    <i class="bi bi-stars"></i> AI Assist
+                </button>
+                <button class="io-action-btn ai-rainbow-btn" id="ai-cfg-open" title="Configure AI assistant">
+                    <i class="bi bi-gear-fill"></i>
+                </button>
+            </div>
+            <div class="io-body" id="output-body">
+                <!-- Invisible textarea for copy/download -->
+                <textarea id="output-textarea" class="io-textarea no-hljs"
+                    readonly
+                    spellcheck="false"
+                    placeholder="Converted query will appear here…"></textarea>
+                <!-- Syntax highlight overlay -->
+                <div id="output-highlight-wrap" aria-hidden="true">
+                    <pre><code id="output-highlight" class="plaintext"></code></pre>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /#io-panel -->
+
+</div><!-- /#app-layout -->
+
+<!-- 
+     FOOTER
+ -->
+<footer id="app-footer">
+    <span id="status-bar" class="status-bar status-info">
+        <i class="bi bi-info-circle"></i> Ready — add operators and paste your rule/query to begin.
+    </span>
+    <span class="footer-brand">QueryCast</span>
+    <a class="footer-github-link" href="https://github.com/jonesckevin" target="_blank" rel="noopener noreferrer" aria-label="Open GitHub">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 0.5C5.65 0.5 0.5 5.66 0.5 12.02c0 5.09 3.29 9.4 7.86 10.93 0.57 0.11 0.78-0.25 0.78-0.55 0-0.27-0.01-1.16-0.02-2.1-3.2 0.7-3.88-1.36-3.88-1.36-0.52-1.33-1.28-1.68-1.28-1.68-1.04-0.72 0.08-0.7 0.08-0.7 1.15 0.08 1.75 1.18 1.75 1.18 1.02 1.76 2.67 1.25 3.32 0.96 0.1-0.74 0.4-1.25 0.73-1.53-2.56-0.29-5.26-1.29-5.26-5.73 0-1.26 0.45-2.28 1.18-3.09-0.12-0.29-0.51-1.47 0.11-3.06 0 0 0.97-0.31 3.17 1.18 0.92-0.26 1.9-0.39 2.88-0.39 0.98 0 1.96 0.13 2.88 0.39 2.2-1.49 3.17-1.18 3.17-1.18 0.63 1.59 0.24 2.77 0.12 3.06 0.74 0.81 1.18 1.83 1.18 3.09 0 4.45-2.71 5.44-5.29 5.73 0.41 0.36 0.78 1.05 0.78 2.12 0 1.53-0.01 2.76-0.01 3.13 0 0.3 0.2 0.66 0.79 0.55 4.56-1.53 7.85-5.84 7.85-10.93C23.5 5.66 18.35 0.5 12 0.5z" fill="currentColor"></path>
+        </svg>
+    </a>
+    <span class="footer-version">v0.1</span>
+</footer>
+
+
+<!-- 
+     IOC → SIGMA CONVERTER MODAL
+ -->
+<div id="ioc-overlay" class="sigma-db-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="IOC to Sigma Converter">
+    <div class="ioc-modal">
+
+        <!-- Header -->
+        <div class="ioc-modal-header">
+            <i class="bi bi-shield-exclamation" style="color:var(--accent)"></i>
+            <span class="ioc-modal-title">IOC → Sigma Rule Converter</span>
+            <span id="ioc-ioc-count" class="ioc-count-badge"></span>
+            <button class="sigma-db-close" id="ioc-modal-close" title="Close" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <!-- Help (collapsible) -->
+        <details class="ioc-help">
+            <summary><i class="bi bi-question-circle"></i> Syntax help &amp; supported types</summary>
+            <div class="ioc-help-body">
+                <div class="ioc-help-grid">
+                    <div class="ioc-help-col">
+                        <strong>Prefix syntax</strong> (forces type, one per line):
+                        <ul>
+                            <li><code>ipv4=192.168.1.1</code> — IPv4 address or CIDR</li>
+                            <li><code>ipv6=::1</code> — IPv6 address</li>
+                            <li><code>ip=10.0.0.1</code> — auto v4/v6</li>
+                            <li><code>domain=evil.com</code> — FQDN / hostname</li>
+                            <li><code>url=https://evil.com/path</code> — full URL</li>
+                            <li><code>md5=</code> / <code>sha1=</code> / <code>sha256=</code> — hash</li>
+                            <li><code>hash=abc123…</code> — auto-detect hash length</li>
+                            <li><code>path=C:\Windows\evil.exe</code> — file path</li>
+                            <li><code>file=evil.exe</code> — file name only</li>
+                            <li><code>cmdline=powershell -enc …</code> — command line</li>
+                            <li><code>registry=HKLM\…</code> — registry key</li>
+                            <li><code>email=attacker@evil.com</code></li>
+                            <li><code>ua=Mozilla/5.0…</code> — user agent</li>
+                        </ul>
+                    </div>
+                    <div class="ioc-help-col">
+                        <strong>CSV upload</strong>: accepts these column layouts:
+                        <ul>
+                            <li><code>type, value</code> (e.g. <code>ipv4, 1.2.3.4</code>)</li>
+                            <li><code>value, type</code> (reversed)</li>
+                            <li>Single column — auto-detected</li>
+                            <li>Optional header row is skipped automatically</li>
+                        </ul>
+                        <strong>Auto-detected types</strong> (no prefix needed):
+                        <ul>
+                            <li>IPv4/IPv6 — from structure</li>
+                            <li>SHA256 (64 hex), SHA1 (40), MD5 (32)</li>
+                            <li>URLs starting with <code>http://</code> or <code>https://</code></li>
+                            <li>Email addresses</li>
+                            <li>Registry keys starting with <code>HKLM</code> / <code>HKEY_</code></li>
+                            <li>Windows paths (<code>C:\…</code>, <code>\\server\…</code>)</li>
+                            <li>Unix paths (<code>/usr/…</code>)</li>
+                        </ul>
+                        <em>Ambiguous entries (e.g. <code>evil.exe</code>) will ask you to confirm the type.</em>
+                    </div>
+                </div>
+            </div>
+        </details>
+
+        <!-- Filter & field reference (collapsible) -->
+        <details class="ioc-help">
+            <summary><i class="bi bi-funnel"></i> Filter types &amp; field mappings</summary>
+            <div class="ioc-help-body">
+                <p class="ioc-filter-intro">Each IOC type maps to a specific Sigma field and logsource category. Auto-detection assigns a confidence score — entries below 80% appear as <em>"uncertain"</em> and require confirmation before generating.</p>
+                <table class="ioc-filter-table">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Auto-detected when&hellip;</th>
+                            <th>Sigma field</th>
+                            <th>Logsource category</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><i class="bi bi-hdd-network" style="color:#ff6b6b"></i> IPv4 Address</td>
+                            <td>4 octets <code>0–255</code>, optional CIDR suffix (<code>/24</code>) &middot; 100% confidence</td>
+                            <td><code>DestinationIp</code></td>
+                            <td><code>network_connection</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-hdd-network" style="color:#ff8787"></i> IPv6 Address</td>
+                            <td>Colon-separated hex groups &middot; 100% confidence</td>
+                            <td><code>DestinationIp</code></td>
+                            <td><code>network_connection</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-globe" style="color:#74c0fc"></i> Domain / FQDN</td>
+                            <td>Valid hostname with dot-separated labels, no common executable extension &middot; 90% confidence</td>
+                            <td><code>QueryName|contains</code></td>
+                            <td><code>dns_query</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-link-45deg" style="color:#4dabf7"></i> URL</td>
+                            <td>Starts with <code>http://</code> or <code>https://</code> &middot; 100% confidence</td>
+                            <td><code>cs-uri|contains</code></td>
+                            <td><code>webserver</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-fingerprint" style="color:#ffa94d"></i> MD5 Hash</td>
+                            <td>Exactly 32 hex characters &middot; 95% confidence (alt: filename)</td>
+                            <td><code>md5</code></td>
+                            <td><code>process_creation</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-fingerprint" style="color:#ffc078"></i> SHA1 Hash</td>
+                            <td>Exactly 40 hex characters &middot; 100% confidence</td>
+                            <td><code>sha1</code></td>
+                            <td><code>process_creation</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-fingerprint" style="color:#ffd8a8"></i> SHA256 Hash</td>
+                            <td>Exactly 64 hex characters &middot; 100% confidence</td>
+                            <td><code>sha256</code></td>
+                            <td><code>process_creation</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-folder2-open" style="color:#a9e34b"></i> File Path</td>
+                            <td>Windows drive path (<code>C:\…</code>), UNC path (<code>\\server\…</code>), or Unix absolute path (<code>/usr/…</code>) &middot; 90–100% confidence</td>
+                            <td><code>Image|contains</code></td>
+                            <td><code>process_creation</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-file-earmark-code" style="color:#c0eb75"></i> File Name</td>
+                            <td>Has a file extension, no path separators or whitespace, not a valid FQDN &middot; 75% confidence (alt: domain, cmdline)</td>
+                            <td><code>Image|endswith</code></td>
+                            <td><code>process_creation</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-terminal" style="color:#b197fc"></i> Command Line</td>
+                            <td>Contains whitespace or shell operators (<code>&lt; &gt; | &amp; ;</code>), or starts with a known process name (<code>powershell</code>, <code>cmd.exe</code>, <code>wscript</code>, …) &middot; 85–95% confidence</td>
+                            <td><code>CommandLine|contains</code></td>
+                            <td><code>process_creation</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-sliders" style="color:#e599f7"></i> Registry Key</td>
+                            <td>Starts with <code>HKLM</code>, <code>HKCU</code>, <code>HKCR</code>, <code>HKU</code>, <code>HKCC</code>, or <code>HKEY_</code> &middot; 100% confidence</td>
+                            <td><code>TargetObject|contains</code></td>
+                            <td><code>registry_event</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-envelope" style="color:#63e6be"></i> Email Address</td>
+                            <td>Matches <code>local@domain.tld</code> pattern (no spaces or @ ambiguity) &middot; 100% confidence</td>
+                            <td><code>SenderAddress</code></td>
+                            <td><code>email</code></td>
+                        </tr>
+                        <tr>
+                            <td><i class="bi bi-browser-chrome" style="color:#94d82d"></i> User Agent</td>
+                            <td>Contains known UA tokens: <code>Mozilla/</code>, <code>Googlebot</code>, <code>curl/</code>, <code>python-requests</code>, <code>libwww</code> &middot; 100% confidence</td>
+                            <td><code>cs-User-Agent|contains</code></td>
+                            <td><code>webserver</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="ioc-filter-footnote"><i class="bi bi-info-circle"></i> When multiple IOC types target different logsource categories, the generated rule uses the first category and adds a comment suggesting you split into separate rules per category. The Sigma condition uses <code>1 of ioc_*</code> when more than one type group is present.</p>
+            </div>
+        </details>
+
+        <!-- Rule metadata row -->
+        <div class="ioc-meta-row">
+            <input class="ioc-meta-input" id="ioc-title-input" type="text" placeholder="Rule title (e.g. Threat Actor X IOCs)" maxlength="200">
+            <input class="ioc-meta-input ioc-meta-desc" id="ioc-desc-input" type="text" placeholder="Description (optional)" maxlength="500">
+            <select class="ioc-level-select" id="ioc-level-select" title="Sigma rule severity level">
+                <option value="critical">Critical</option>
+                <option value="high" selected>High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+                <option value="informational">Informational</option>
+            </select>
+        </div>
+
+        <!-- Input area -->
+        <div class="ioc-input-area">
+            <div class="ioc-input-toolbar">
+                <span class="ioc-input-label"><i class="bi bi-clipboard-data"></i> Paste IOCs (one per line) or upload a CSV</span>
+                <button class="ioc-tool-btn" id="ioc-csv-btn" title="Upload CSV file">
+                    <i class="bi bi-file-earmark-spreadsheet"></i> Upload CSV
+                </button>
+                <input type="file" id="ioc-csv-input" accept=".csv,.txt" style="display:none">
+                <button class="ioc-tool-btn ioc-tool-btn-secondary" id="ioc-clear-btn" title="Clear input">
+                    <i class="bi bi-x-lg"></i> Clear
+                </button>
+            </div>
+            <textarea id="ioc-textarea" class="ioc-textarea" spellcheck="false" autocorrect="off" autocapitalize="off"
+                placeholder="Paste IOCs here — one per line. Examples:&#10;1.2.3.4&#10;evil-domain.com&#10;ipv4=10.0.0.1&#10;path=C:\Windows\Temp\malware.exe&#10;3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c"></textarea>
+        </div>
+
+        <!-- Detection results -->
+        <div class="ioc-results-header">
+            <span class="ioc-results-title"><i class="bi bi-list-check"></i> Detection Results</span>
+            <span class="ioc-results-hint">Click a type dropdown to override auto-detected types.</span>
+        </div>
+        <div class="ioc-results-body" id="ioc-results-body">
+            <div class="ioc-empty">
+                <i class="bi bi-clipboard-data"></i>
+                <div>Paste or upload IOCs above — one per line.</div>
+                <div style="margin-top:6px;font-size:10px">Supports auto-detection or prefix syntax like <code>ipv4=1.2.3.4</code></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="ioc-modal-footer">
+            <span class="ioc-footer-note"><i class="bi bi-info-circle"></i> Generated rule loads into the Input panel. Add a conversion operator to the recipe to transform it.</span>
+            <label class="ioc-split-toggle" title="Recommended for cross-conversion consistency">
+                <input type="checkbox" id="ioc-split-rules" checked>
+                <span>Cross-convert mode (split by logsource)</span>
+            </label>
+            <button class="ioc-generate-btn" id="ioc-generate-btn" disabled>
+                <i class="bi bi-arrow-right-circle"></i> Generate Sigma Rule
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- 
+     SIGMA DB MODAL
+ -->
+<div id="sigma-db-overlay" class="sigma-db-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Sigma Rules Database">
+    <div class="sigma-db-modal">
+        <!-- Header -->
+        <div class="sigma-db-header">
+            <i class="bi bi-database" style="color:var(--accent)"></i>
+            <span class="sigma-db-title">Sigma Rules Database</span>
+            <span class="sigma-db-meta" id="sigma-db-meta">No local cache</span>
+            <button class="sigma-db-close" id="sigma-db-close" title="Close" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <!-- Toolbar -->
+        <div class="sigma-db-toolbar">
+            <div class="sigma-db-search-wrap">
+                <i class="bi bi-search"></i>
+                <input class="sigma-db-search-input" id="sigma-db-search" type="search" placeholder="Search by title, description, tags…" autocomplete="off">
+            </div>
+            <button class="sigma-db-dl-btn" id="sigma-db-download" title="Download all Sigma rules from SigmaHQ/sigma on GitHub">
+                <i class="bi bi-cloud-download"></i> Download Rules
+            </button>
+            <button class="sigma-db-dl-btn" id="sigma-db-reset" title="Delete all locally cached Sigma rules">
+                <i class="bi bi-trash"></i> Reset DB
+            </button>
+        </div>
+        <!-- Status bar -->
+        <div class="sigma-db-status" id="sigma-db-status">
+            <i class="bi bi-info-circle"></i> <span id="sigma-db-status-text">Download rules to populate the database.</span>
+        </div>
+        <!-- Progress bar -->
+        <div class="sigma-db-progress-bar-wrap">
+            <div class="sigma-db-progress-bar" id="sigma-db-progress"></div>
+        </div>
+        <!-- Results list -->
+        <div class="sigma-db-results" id="sigma-db-results">
+            <div class="sigma-db-empty">
+                <i class="bi bi-cloud-download"></i>
+                Click <strong>Download Rules</strong> to fetch the latest Sigma rules from SigmaHQ/sigma on GitHub.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 
+     SIGMA HELP MODAL
+ -->
+<div id="sigma-help-overlay" class="sigma-db-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Sigma Help">
+    <div class="sigma-help-modal">
+        <div class="sigma-db-header">
+            <i class="bi bi-question-circle" style="color:var(--accent)"></i>
+            <span class="sigma-db-title">Sigma Help</span>
+            <span class="sigma-db-meta">Rule writing quick reference</span>
+            <button class="sigma-db-close" id="sigma-help-close" title="Close" aria-label="Close" onclick="window.querycastSigmaHelpClose && window.querycastSigmaHelpClose()"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="sigma-help-body">
+            <section class="sigma-help-section">
+                <h3><i class="bi bi-diagram-3"></i> Required Rule Shape</h3>
+                <pre class="sigma-help-code"><code>title: Suspicious PowerShell Encoded Command
+id: 123e4567-e89b-12d3-a456-426614174000
+status: experimental
+description: Detects PowerShell launched with encoded command arguments
+author: Your Team
+logsource:
+  product: windows
+  category: process_creation
+detection:
+  selection:
+    Image|endswith:
+      - '\\powershell.exe'
+    CommandLine|contains:
+      - ' -enc '
+  condition: selection
+level: high</code></pre>
+            </section>
+
+            <section class="sigma-help-section">
+                <h3><i class="bi bi-check2-square"></i> Build It Correctly</h3>
+                <ul class="sigma-help-list">
+                    <li>Always define <strong>logsource.product</strong> and <strong>logsource.category</strong>.</li>
+                    <li>Put field logic under one or more detection blocks (for example: <code>selection</code>, <code>filter_legit</code>).</li>
+                    <li>Use Sigma modifiers for matching behavior: <code>|contains</code>, <code>|startswith</code>, <code>|endswith</code>, <code>|re</code>.</li>
+                    <li>Set <code>condition</code> explicitly, for example: <code>selection and not filter_legit</code>.</li>
+                    <li>Pick a realistic <code>level</code> and include helpful metadata (<code>tags</code>, <code>references</code>, <code>falsepositives</code>).</li>
+                </ul>
+            </section>
+
+            <section class="sigma-help-section sigma-help-grid">
+                <div>
+                    <h3><i class="bi bi-lightbulb"></i> Good Practices</h3>
+                    <ul class="sigma-help-list">
+                        <li>Use specific fields first (for example <code>Image</code> + <code>CommandLine</code>) instead of broad keywords only.</li>
+                        <li>Add a <code>filter_*</code> block for known benign noise.</li>
+                        <li>Keep values normalized and escaped correctly.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3><i class="bi bi-exclamation-triangle"></i> Common Mistakes</h3>
+                    <ul class="sigma-help-list">
+                        <li>Missing <code>detection.condition</code>.</li>
+                        <li>Using SIEM query syntax inside Sigma YAML.</li>
+                        <li>Forgetting YAML indentation consistency.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+
+        <div class="sigma-help-footer">
+            <button class="sigma-db-dl-btn" id="sigma-help-load-template" onclick="window.querycastSigmaHelpLoadTemplate && window.querycastSigmaHelpLoadTemplate()">
+                <i class="bi bi-file-earmark-plus"></i> Load Starter Template
+            </button>
+            <button class="io-action-btn" id="sigma-help-close-footer" onclick="window.querycastSigmaHelpClose && window.querycastSigmaHelpClose()">
+                <i class="bi bi-check2"></i> Got It
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 
+     AI ASSISTANT CONFIG MODAL
+ -->
+<div id="ai-config-overlay" class="sigma-db-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="AI Assistant Configuration">
+    <div class="ai-config-modal">
+        <!-- Header -->
+        <div class="ai-modal-header">
+            <i class="bi bi-stars" style="color:var(--accent)"></i>
+            <span class="ai-modal-title">AI Assistant Settings</span>
+            <button class="sigma-db-close" id="ai-cfg-close" title="Close" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <!-- Provider -->
+        <div class="ai-cfg-section">
+            <label class="ai-cfg-label" for="ai-cfg-provider">Provider</label>
+            <select class="ai-cfg-select" id="ai-cfg-provider"></select>
+        </div>
+
+        <!-- Model -->
+        <div class="ai-cfg-section">
+            <label class="ai-cfg-label" for="ai-cfg-model">Model</label>
+            <input class="ai-cfg-input" id="ai-cfg-model" type="text" placeholder="Default model" autocomplete="off" spellcheck="false">
+        </div>
+
+        <!-- API Key (cloud providers) -->
+        <div class="ai-cfg-section" id="ai-cfg-key-section">
+            <label class="ai-cfg-label" for="ai-cfg-key">API Key</label>
+            <input class="ai-cfg-input" id="ai-cfg-key" type="password" placeholder="sk-…" autocomplete="off" spellcheck="false">
+        </div>
+
+        <!-- Local server settings -->
+        <div class="ai-cfg-section" id="ai-cfg-local-section" style="display:none;">
+            <label class="ai-cfg-label">Server Address</label>
+            <div class="ai-cfg-local-row">
+                <input class="ai-cfg-input ai-cfg-ip" id="ai-cfg-local-ip" type="text" placeholder="localhost" value="localhost" autocomplete="off" spellcheck="false">
+                <span class="ai-cfg-colon">:</span>
+                <input class="ai-cfg-input ai-cfg-port" id="ai-cfg-local-port" type="text" placeholder="Port (e.g. 11434)" autocomplete="off" spellcheck="false">
+            </div>
+        </div>
+
+        <!-- Test connection -->
+        <div class="ai-cfg-section ai-cfg-test-row">
+            <button class="ai-cfg-btn" id="ai-cfg-test-btn"><i class="bi bi-wifi"></i> Test Connection</button>
+            <span class="ai-cfg-test-status" id="ai-cfg-test-status"></span>
+        </div>
+
+        <!-- Mode toggle -->
+        <div class="ai-cfg-section">
+            <label class="ai-cfg-label">Query Mode</label>
+            <div class="ai-mode-toggle">
+                <label class="ai-mode-option">
+                    <input type="radio" name="ai-mode" id="ai-cfg-mode-explain" value="explain" checked>
+                    <span class="ai-mode-btn"><i class="bi bi-lightbulb"></i> Explain</span>
+                </label>
+                <label class="ai-mode-option">
+                    <input type="radio" name="ai-mode" id="ai-cfg-mode-review" value="review">
+                    <span class="ai-mode-btn"><i class="bi bi-pencil-square"></i> Review &amp; Fix</span>
+                </label>
+            </div>
+            <div class="ai-mode-hint" id="ai-mode-hint-explain">AI will describe what the query detects and how it works.</div>
+            <div class="ai-mode-hint" id="ai-mode-hint-review" style="display:none;">AI will check for errors and suggest a corrected query.</div>
+        </div>
+
+        <!-- Custom prompt -->
+        <div class="ai-cfg-section">
+            <label class="ai-cfg-label" for="ai-cfg-prompt">Custom Instructions <span style="opacity:.6;font-weight:400;">(optional)</span></label>
+            <textarea class="ai-cfg-textarea" id="ai-cfg-prompt" rows="2" placeholder="Additional context or instructions for the AI…" spellcheck="false"></textarea>
+        </div>
+
+        <!-- Footer buttons -->
+        <div class="ai-cfg-footer">
+            <button class="ai-cfg-btn ai-cfg-btn-primary" id="ai-cfg-save"><i class="bi bi-check-lg"></i> Save &amp; Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- 
+     AI RESPONSE MODAL
+ -->
+<div id="ai-response-overlay" class="sigma-db-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="AI Response">
+    <div class="ai-response-modal">
+        <!-- Header -->
+        <div class="ai-modal-header">
+            <i class="bi bi-stars" style="color:var(--accent)"></i>
+            <span class="ai-modal-title" id="ai-response-title">AI Explanation</span>
+            <button class="sigma-db-close" id="ai-response-close" title="Close" aria-label="Close"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <!-- Loading spinner -->
+        <div id="ai-response-loading" class="ai-response-loading" style="display:flex;">
+            <div class="ai-spinner"></div>
+            <span>Analyzing query…</span>
+        </div>
+        <!-- Error -->
+        <div id="ai-response-error" class="ai-response-error" style="display:none;"></div>
+        <!-- Body -->
+        <div id="ai-response-body" class="ai-response-body" style="display:none;"></div>
+        <!-- Footer -->
+        <div class="ai-response-footer">
+            <button class="ai-cfg-btn" id="ai-response-copy" style="display:none;"><i class="bi bi-clipboard"></i> Copy</button>
+            <button class="ai-cfg-btn ai-cfg-btn-primary" id="ai-response-apply" style="display:none;" title="Apply corrected query to output"><i class="bi bi-check2-circle"></i> Apply Corrected Query</button>
+        </div>
+    </div>
+</div>
+
+<!-- 
+     SCRIPTS
+ -->
+
+<!-- js-yaml (YAML parser) -->
+<script src="https://unpkg.com/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+
+<!-- Highlight.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/yaml.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/sql.min.js"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"
+    crossorigin="anonymous"></script>
+
+<!-- Core -->
+<script src="js/sigma-parser.js?v=20260510c"></script>
+<script src="js/field-maps.js?v=20260510c"></script>
+<script src="js/query-parser.js?v=20260510c"></script>
+
+<!-- Backends -->
+<script src="js/backends/base-backend.js?v=20260510c"></script>
+<script src="js/backends/splunk.js?v=20260510c"></script>
+<script src="js/backends/elastic.js?v=20260510c"></script>
+<script src="js/backends/kql.js?v=20260510c"></script>
+<script src="js/backends/carbon-black.js?v=20260510c"></script>
+<script src="js/backends/vql.js?v=20260510c"></script>
+<script src="js/backends/siem-generic.js?v=20260510c"></script>
+
+<!-- App -->
+<script src="js/operators-registry.js?v=20260510c"></script>
+<script src="js/recipe.js?v=20260510c"></script>
+<script src="js/sigma-db.js?v=20260510c"></script>
+<script src="js/ioc-converter.js?v=20260510c"></script>
+<script src="js/ai-assistant.js?v=20260510c"></script>
+<script src="js/app.js?v=20260510c"></script>
+
+<!-- Inline init for extra wiring not in app.js -->
+<script>
+(function() {
+    // Clear recipe button
+    document.getElementById('btn-clear-recipe')?.addEventListener('click', () => Recipe.clear());
+
+    // File upload
+    document.getElementById('file-upload')?.addEventListener('change', function() {
+        const file = this.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = e => {
+            const ta = document.getElementById('input-textarea');
+            if (ta) {
+                ta.value = e.target.result;
+                ta.dispatchEvent(new Event('input'));
+            }
+        };
+        reader.readAsText(file);
+        this.value = '';
+    });
+
+    // IO panel resize (drag divider)
+    const divider   = document.getElementById('io-resize');
+    const inputPane = document.getElementById('input-pane');
+    const outputPane = document.getElementById('output-pane');
+    let isDragging  = false;
+    let startY      = 0;
+    let startInputH = 0;
+
+    divider?.addEventListener('mousedown', e => {
+        isDragging  = true;
+        startY      = e.clientY;
+        startInputH = inputPane.getBoundingClientRect().height;
+        document.body.style.cursor = 'row-resize';
+        document.body.style.userSelect = 'none';
+    });
+
+    document.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        const delta = e.clientY - startY;
+        const newH  = Math.max(60, startInputH + delta);
+        inputPane.style.flex  = 'none';
+        inputPane.style.height = `${newH}px`;
+        outputPane.style.flex = '1';
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (isDragging) {
+            isDragging = false;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        }
+    });
+
+    // Horizontal pane resize (Operations | Recipe | IO)
+    const layout = document.getElementById('app-layout');
+    const opsPanel = document.getElementById('ops-panel');
+    const recipePanel = document.getElementById('recipe-panel');
+    const dividerOpsRecipe = document.getElementById('resize-ops-recipe');
+    const dividerRecipeIo = document.getElementById('resize-recipe-io');
+
+    let hDrag = null;
+    let hStartX = 0;
+    let hStartOpsW = 0;
+    let hStartRecipeW = 0;
+
+    function beginHorizontalDrag(mode, event) {
+        hDrag = mode;
+        hStartX = event.clientX;
+        hStartOpsW = opsPanel.getBoundingClientRect().width;
+        hStartRecipeW = recipePanel.getBoundingClientRect().width;
+        document.body.style.cursor = 'col-resize';
+        document.body.style.userSelect = 'none';
+    }
+
+    dividerOpsRecipe?.addEventListener('mousedown', (e) => beginHorizontalDrag('ops', e));
+    dividerRecipeIo?.addEventListener('mousedown', (e) => beginHorizontalDrag('recipe', e));
+
+    document.addEventListener('mousemove', (e) => {
+        if (!hDrag || !layout || !opsPanel || !recipePanel) return;
+
+        const dx = e.clientX - hStartX;
+        const layoutW = layout.getBoundingClientRect().width;
+        const minOps = 200;
+        const minRecipe = 240;
+        const minIo = 320;
+
+        if (hDrag === 'ops') {
+            const maxOps = Math.max(minOps, layoutW - minRecipe - minIo - 12);
+            const nextOps = Math.max(minOps, Math.min(maxOps, hStartOpsW + dx));
+            opsPanel.style.width = `${nextOps}px`;
+            localStorage.setItem('codeswap-ops-width', String(Math.round(nextOps)));
+        }
+
+        if (hDrag === 'recipe') {
+            const maxRecipe = Math.max(minRecipe, layoutW - minIo - opsPanel.getBoundingClientRect().width - 12);
+            const nextRecipe = Math.max(minRecipe, Math.min(maxRecipe, hStartRecipeW + dx));
+            recipePanel.style.width = `${nextRecipe}px`;
+            localStorage.setItem('codeswap-recipe-width', String(Math.round(nextRecipe)));
+        }
+    });
+
+    document.addEventListener('mouseup', () => {
+        if (hDrag) {
+            hDrag = null;
+            document.body.style.cursor = '';
+            document.body.style.userSelect = '';
+        }
+    });
+
+    // Theme sync: update hljs stylesheet
+    const observer = new MutationObserver(() => {
+        const theme = document.documentElement.getAttribute('data-theme');
+        const hljsLink = document.getElementById('hljs-theme');
+        if (hljsLink) {
+            hljsLink.href = theme === 'dark'
+                ? 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css'
+                : 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-light.min.css';
+        }
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+
+    // After DOM ready, switch output textarea mode based on hljs availability
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedOpsW = parseInt(localStorage.getItem('codeswap-ops-width') || '', 10);
+        const savedRecipeW = parseInt(localStorage.getItem('codeswap-recipe-width') || '', 10);
+        if (Number.isFinite(savedOpsW) && savedOpsW >= 200) {
+            const ops = document.getElementById('ops-panel');
+            if (ops) ops.style.width = `${savedOpsW}px`;
+        }
+        if (Number.isFinite(savedRecipeW) && savedRecipeW >= 240) {
+            const recipe = document.getElementById('recipe-panel');
+            if (recipe) recipe.style.width = `${savedRecipeW}px`;
+        }
+
+        const outTa = document.getElementById('output-textarea');
+        if (typeof hljs !== 'undefined' && outTa) {
+            outTa.classList.remove('no-hljs');
+        }
+    });
+})();
+</script>
+
+</body>
+</html>
