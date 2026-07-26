@@ -7,12 +7,12 @@
 
 const App = (() => {
 
-    // ── DOM references ───────────────────────────────────────────────────
+    // ── DOM references ──
     let inputEl, outputEl, recipeEl, recipeDropzoneEl, opsListEl, opSearchEl;
     let statusBarEl, copyBtn, downloadBtn, clearInputBtn;
     let themeBtn, recipeCountEl, sampleBtn;
 
-    // ── State ────────────────────────────────────────────────────────────
+    // ── State ──
     let _debounceTimer = null;
     let _lastResults   = [];
     let _lastOutputFormat = 'text';
@@ -22,7 +22,7 @@ const App = (() => {
     // Default accent per theme
     const ACCENT_DEFAULTS = { dark: '#4dabf7', light: '#339af0' };
 
-    // ── Accent color helpers ──────────────────────────────────────────────
+    // ── Accent color helpers ──
     function hexToHsl(hex) {
         const r = parseInt(hex.slice(1,3),16)/255, g = parseInt(hex.slice(3,5),16)/255, b = parseInt(hex.slice(5,7),16)/255;
         const max = Math.max(r,g,b), min = Math.min(r,g,b);
@@ -64,7 +64,7 @@ const App = (() => {
         if (input) input.value = hex;
     }
 
-    // ── Operator logo map (op ID → relative logo path) ──────────────────
+    // ── Operator logo map (op ID → relative logo path) ──
     const OP_LOGO_MAP = {
         'sigma-to-splunk':           'logo/splunk.png',
         'splunk-to-sigma':           'logo/splunk.png',
@@ -119,7 +119,7 @@ const App = (() => {
         'tanium-to-sigma':           'logo/cbcloud.png',
     };
 
-    // ── Init ─────────────────────────────────────────────────────────────
+    // ── Init ──
     function init() {
         // Grab DOM
         inputEl       = document.getElementById('input-textarea');
@@ -331,7 +331,7 @@ const App = (() => {
         });
     }
 
-    // ── Theme ────────────────────────────────────────────────────────────
+    // ── Theme ──
     function applyTheme(theme) {
         document.documentElement.setAttribute('data-theme', theme);
         const icon = document.getElementById('theme-icon');
@@ -346,7 +346,7 @@ const App = (() => {
         }
     }
 
-    // ── Operator List Rendering ──────────────────────────────────────────
+    // ── Operator List Rendering ──
     function renderOperatorList(filter = '') {
         const categories = OperatorsRegistry.getCategories();
         const allOps     = OperatorsRegistry.getAll();
@@ -454,7 +454,7 @@ const App = (() => {
         incompatible.forEach(step => Recipe.removeStep(step.stepId));
     }
 
-    // ── Recipe Rendering ─────────────────────────────────────────────────
+    // ── Recipe Rendering ──
     function renderRecipe() {
         const steps = Recipe.getSteps();
 
@@ -558,7 +558,7 @@ const App = (() => {
         return '';
     }
 
-    // ── Pipeline Execution ───────────────────────────────────────────────
+    // ── Pipeline Execution ──
     function scheduleRun() {
         clearTimeout(_debounceTimer);
         _debounceTimer = setTimeout(runNow, 150);
@@ -839,13 +839,13 @@ const App = (() => {
         return /[A-Za-z0-9_.@$\\\/\-*?]/.test(ch);
     }
 
-    // ── Status Bar ───────────────────────────────────────────────────────
+    // ── Status Bar ──
     function setStatus(level, message) {
         statusBarEl.className = `status-bar status-${level}`;
         statusBarEl.innerHTML = `<i class="bi bi-${level === 'ok' ? 'check-circle' : level === 'error' ? 'exclamation-circle' : 'info-circle'}"></i> ${escapeHtml(message)}`;
     }
 
-    // ── Copy / Download ──────────────────────────────────────────────────
+    // ── Copy / Download ──
     function copyOutput() {
         if (!outputEl.value) return;
         navigator.clipboard.writeText(outputEl.value).then(() => {
@@ -877,7 +877,7 @@ const App = (() => {
         URL.revokeObjectURL(url);
     }
 
-    // ── Sample Rule ──────────────────────────────────────────────────────
+    // ── Sample Rule ──
     function loadSampleRule(format = 'sigma') {
         if (format === 'splunk') {
             inputEl.value = `index=wineventlog source="WinEventLog:Security" EventCode=4688 (NewProcessName="*\\powershell.exe" OR NewProcessName="*\\pwsh.exe") CommandLine="* -enc *"`;
@@ -941,7 +941,7 @@ falsepositives:
 level: high`;
     }
 
-    // ── Helpers ──────────────────────────────────────────────────────────
+    // ── Helpers ──
     function escapeHtml(str) {
         if (!str) return '';
         return String(str)
@@ -957,7 +957,7 @@ level: high`;
         setTimeout(() => recipeEl.classList.remove('flash'), 300);
     }
 
-    // ── Sigma DB UI ──────────────────────────────────────────────────────
+    // ── Sigma DB UI ──
     function openSigmaDB() {
         const overlay = document.getElementById('sigma-db-overlay');
         if (!overlay) return;

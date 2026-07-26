@@ -16,7 +16,7 @@
 
 const QueryParser = (() => {
 
-    // ── Token types ─────────────────────────────────────────────────────
+    // ── Token types ──
     const TOKEN_TYPES = {
         FIELD:    'FIELD',
         OPERATOR: 'OPERATOR',
@@ -28,7 +28,7 @@ const QueryParser = (() => {
         EOF:      'EOF',
     };
 
-    // ── Tokenizer ───────────────────────────────────────────────────────
+    // ── Tokenizer ──
     function tokenize(query) {
         if (!query) return [];
         const tokens = [];
@@ -178,7 +178,7 @@ const QueryParser = (() => {
         return tokens;
     }
 
-    // ── AST Nodes ───────────────────────────────────────────────────────
+    // ── AST Nodes ──
     class ASTNode {}
 
     class Comparison extends ASTNode {
@@ -218,7 +218,7 @@ const QueryParser = (() => {
         }
     }
 
-    // ── Parser ──────────────────────────────────────────────────────────
+    // ── Parser ──
     class Parser {
         constructor(tokens) {
             this.tokens = tokens;
@@ -356,7 +356,7 @@ const QueryParser = (() => {
         return parser.parse();
     }
 
-    // ── AST Traversal ───────────────────────────────────────────────────
+    // ── AST Traversal ──
     function extractComparisons(ast, result = []) {
         if (!ast) return result;
 

@@ -19,7 +19,7 @@ const Recipe = (() => {
         if (_onChange) _onChange([..._steps]);
     }
 
-    // ── CRUD ─────────────────────────────────────────────────────────────
+    // ── CRUD ──
 
     function addStep(operatorId) {
         const op = OperatorsRegistry.getById(operatorId);
@@ -77,7 +77,7 @@ const Recipe = (() => {
 
     function getSteps() { return [..._steps]; }
 
-    // ── Execution ─────────────────────────────────────────────────────────
+    // ── Execution ──
     // Runs each enabled step in sequence.
     // Returns array of { stepId, output, error, durationMs }
     function run(input, initialFormat = 'sigma') {

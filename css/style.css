@@ -3,7 +3,7 @@
    CyberChef-inspired three-column layout
    ═══ */
 
-/* ── CSS Variables / Themes ──────────────────────────────────────── */
+/* ── CSS Variables / Themes ── */
 :root {
     --header-h: 46px;
     --footer-h: 24px;
@@ -68,7 +68,7 @@
     --shadow:        0 2px 8px rgba(0,0,0,0.4);
 }
 
-/* ── Reset & Base ────────────────────────────────────────────────── */
+/* ── Reset & Base ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -80,7 +80,7 @@ html, body {
     background: var(--bg-base);
 }
 
-/* ── Header ─────────────────────────────────────────────────────── */
+/* ── Header ── */
 #app-header {
     height: var(--header-h);
     background: var(--bg-header);
@@ -148,7 +148,7 @@ html, body {
     border-color: var(--accent);
 }
 
-/* ── Accent color picker ─────────────────────────────────────────── */
+/* ── Accent color picker ── */
 .accent-picker-wrap {
     display: flex;
     align-items: center;
@@ -234,7 +234,7 @@ html, body {
     margin-top: -14px;
 }
 
-/* ── Main Layout ─────────────────────────────────────────────────── */
+/* ── Main Layout ── */
 #app-layout {
     display: flex;
     height: calc(100vh - var(--header-h) - var(--footer-h));
@@ -256,7 +256,7 @@ html, body {
     opacity: 0.3;
 }
 
-/* ── Left: Operations Panel ──────────────────────────────────────── */
+/* ── Left: Operations Panel ── */
 #ops-panel {
     width: var(--ops-w);
     min-width: 200px;
@@ -458,7 +458,7 @@ html, body {
     font-size: 12px;
 }
 
-/* ── Center: Recipe Panel ────────────────────────────────────────── */
+/* ── Center: Recipe Panel ── */
 #recipe-panel {
     width: var(--recipe-w);
     min-width: 220px;
@@ -670,7 +670,7 @@ html, body {
 }
 #recipe-list.flash { animation: flash 0.3s ease-out; }
 
-/* ── Right: IO Panel ─────────────────────────────────────────────── */
+/* ── Right: IO Panel ── */
 #io-panel {
     flex: 1;
     display: flex;
@@ -817,7 +817,7 @@ html, body {
     color: var(--text-code);
 }
 
-/* ── Footer / Status Bar ─────────────────────────────────────────── */
+/* ── Footer / Status Bar ── */
 #app-footer {
     height: var(--footer-h);
     background: var(--bg-header);
@@ -878,13 +878,13 @@ html, body {
     height: 16px;
 }
 
-/* ── Scrollbar Styling ───────────────────────────────────────────── */
+/* ── Scrollbar Styling ── */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
-/* ── Highlight.js theme overrides ────────────────────────────────── */
+/* ── Highlight.js theme overrides ── */
 [data-theme="dark"] .hljs  { background: transparent; color: #d0d7de; }
 [data-theme="light"] .hljs { background: transparent; color: #212529; }
 [data-theme="dark"] .hljs-comment,
@@ -894,7 +894,7 @@ html, body {
     color: #51cf66;
 }
 
-/* ── Custom output token colors ─────────────────────────────────── */
+/* ── Custom output token colors ── */
 #output-highlight.querycast-highlight .tok-comment { color: #51cf66; }
 
 [data-theme="dark"] #output-highlight.querycast-highlight .tok-filter { color: #4dabf7; }
@@ -915,7 +915,7 @@ html, body {
 #output-highlight.querycast-highlight .tok-bracket-4 { color: #9775fa; }
 #output-highlight.querycast-highlight .tok-bracket-5 { color: #f783ac; }
 
-/* ── Resize handle ───────────────────────────────────────────────── */
+/* ── Resize handle ── */
 .resize-handle-h {
     width: 4px;
     cursor: col-resize;
@@ -925,11 +925,11 @@ html, body {
 }
 .resize-handle-h:hover { background: var(--accent); }
 
-/* ── Utility ─────────────────────────────────────────────────────── */
+/* ── Utility ── */
 .d-none { display: none !important; }
 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
-/* ── Quick-convert shortcut badges ──────────────────────────────── */
+/* ── Quick-convert shortcut badges ── */
 .shortcut-hint {
     font-size: 10px;
     color: var(--text-muted);
@@ -939,7 +939,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     font-family: monospace;
 }
 
-/* ── Sigma DB Modal ──────────────────────────────────────────────── */
+/* ── Sigma DB Modal ── */
 .sigma-db-overlay {
     position: fixed;
     inset: 0;
@@ -1122,7 +1122,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 }
 .sigma-db-empty i { font-size: 28px; display: block; margin-bottom: 8px; }
 
-/* ── Sigma Help Modal ───────────────────────────────────────────── */
+/* ── Sigma Help Modal ── */
 .sigma-help-modal {
     background: var(--bg-panel);
     border: 1px solid var(--border);
@@ -1200,7 +1200,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     .sigma-help-grid { grid-template-columns: 1fr; }
 }
 
-/* ── IOC Converter Modal ─────────────────────────────────────────── */
+/* ── IOC Converter Modal ── */
 .ioc-modal {
     background: var(--bg-panel);
     border: 1px solid var(--border);
@@ -1678,7 +1678,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
    AI ASSISTANT — Rainbow glow + modals
  */
 
-/* ── Rainbow glow animation ─────────────────────────────────────── */
+/* ── Rainbow glow animation ── */
 @keyframes rainbow-glow {
     0%   { box-shadow: 0 0 7px 2px rgba(255, 0, 110, 0.55), 0 0 14px 3px rgba(255, 0, 110, 0.2); }
     14%  { box-shadow: 0 0 7px 2px rgba(255, 140, 0, 0.55), 0 0 14px 3px rgba(255, 140, 0, 0.2); }
@@ -1698,7 +1698,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     animation: rainbow-glow 1.5s linear infinite;
 }
 
-/* ── Shared AI modal layout ─────────────────────────────────────── */
+/* ── Shared AI modal layout ── */
 .ai-modal-header {
     display: flex;
     align-items: center;
@@ -1714,7 +1714,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     color: var(--text-primary);
 }
 
-/* ── AI Config Modal ────────────────────────────────────────────── */
+/* ── AI Config Modal ── */
 .ai-config-modal {
     background: var(--bg-panel);
     border: 1px solid var(--border);
@@ -1787,7 +1787,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .ai-cfg-test-status.warn  { color: #e88a00; }
 .ai-cfg-test-status.info  { color: var(--text-muted); }
 
-/* ── Mode toggle ────────────────────────────────────────────────── */
+/* ── Mode toggle ── */
 .ai-mode-toggle {
     display: flex;
     gap: 6px;
@@ -1820,7 +1820,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     margin-top: 4px;
 }
 
-/* ── AI config buttons ──────────────────────────────────────────── */
+/* ── AI config buttons ── */
 .ai-cfg-btn {
     display: inline-flex;
     align-items: center;
@@ -1862,7 +1862,7 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
     gap: 8px;
 }
 
-/* ── AI Response Modal ──────────────────────────────────────────── */
+/* ── AI Response Modal ── */
 .ai-response-modal {
     background: var(--bg-panel);
     border: 1px solid var(--border);

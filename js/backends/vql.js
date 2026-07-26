@@ -19,7 +19,7 @@ class VqlBackend extends BaseBackend {
         this.limit = options.limit || 1000;
     }
 
-    // ── Override main convert ──────────────────────────────────────────
+    // ── Override main convert ──
     convert(sigmaRule) {
         // Reset per-conversion tracking (same as base-backend)
         this._skippedFields = [];
@@ -55,7 +55,7 @@ class VqlBackend extends BaseBackend {
         return lines.join('\n');
     }
 
-    // ── Build the complete VQL SELECT statement ──────────────────────
+    // ── Build the complete VQL SELECT statement ──
     _buildVqlQuery(sigmaRule) {
         const artifact = FieldMaps.getVqlArtifact(sigmaRule.logsource);
         const fromClause = artifact
@@ -78,7 +78,7 @@ class VqlBackend extends BaseBackend {
         return lines.join('\n');
     }
 
-    // ── Condition AST → VQL WHERE expression ─────────────────────────
+    // ── Condition AST → VQL WHERE expression ──
     _conditionToVql(node, sigmaRule) {
         switch (node.type) {
             case 'ref': {
@@ -157,12 +157,12 @@ class VqlBackend extends BaseBackend {
         }
     }
 
-    // ── Field mapping ──────────────────────────────────────────────
+    // ── Field mapping ──
     _mapField(fieldName, logsource) {
         return FieldMaps.mapField(fieldName, logsource, 'vql', true);
     }
 
-    // ── Build a complete field condition ────────────────────────────
+    // ── Build a complete field condition ──
     buildFieldCondition(node, logsource) {
         const mappedField = this._mapField(node.field, logsource);
         if (mappedField === null) return null; // unsupported – caller tracks and skips
@@ -258,7 +258,7 @@ class VqlBackend extends BaseBackend {
             .replace(/\?/g, '.');
     }
 
-    // ── Keyword search ─────────────────────────────────────────────────
+    // ── Keyword search ──
     buildKeywords(values, logsource) {
         // VQL: search for keywords in all string fields using regex
         const clauses = values.map(v => `log_message =~ '(?i)${this._escapeVqlRegex(v)}'`);
@@ -273,7 +273,7 @@ class VqlBackend extends BaseBackend {
     // base backend compat stubs (not used directly in this override)
     buildFieldConditionStub(node, logsource) { return this.buildFieldCondition(node, logsource); }
 
-    // ── Reverse parser: VQL → Sigma ───────────────────────────────────
+    // ── Reverse parser: VQL → Sigma ──
     static parseQueryToSigma(vqlQuery) {
         if (!vqlQuery || typeof vqlQuery !== 'string') return '';
 

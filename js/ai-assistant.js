@@ -13,7 +13,7 @@ const AiAssistant = (() => {
 
     const STORAGE_KEY = 'codeswap-ai-config';
 
-    // ── Provider definitions ────────────────────────────────────────────
+    // ── Provider definitions ──
     const PROVIDERS = {
         openai:     { name: 'OpenAI',           baseURL: 'https://api.openai.com/v1',                    format: 'openai',    requiresKey: true,  defaultModel: 'gpt-4o-mini',                              local: false },
         anthropic:  { name: 'Anthropic',         baseURL: 'https://api.anthropic.com/v1',                 format: 'anthropic', requiresKey: true,  defaultModel: 'claude-3-5-haiku-20241022',                local: false },
@@ -30,7 +30,7 @@ const AiAssistant = (() => {
         lmstudio:   { name: 'LM Studio (Local)', baseURL: 'http://localhost:1234/v1',                     format: 'openai',    requiresKey: false, defaultModel: 'local-model',                              local: true  },
     };
 
-    // ── Default config ──────────────────────────────────────────────────
+    // ── Default config ──
     const DEFAULT_CONFIG = {
         provider:       'openai',
         model:          '',
@@ -45,7 +45,7 @@ const AiAssistant = (() => {
 
     let _cfg = { ...DEFAULT_CONFIG };
 
-    // ── Load / save ─────────────────────────────────────────────────────
+    // ── Load / save ──
     function _loadConfig() {
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
@@ -57,7 +57,7 @@ const AiAssistant = (() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(_cfg));
     }
 
-    // ── Build effective base URL for local providers ─────────────────────
+    // ── Build effective base URL for local providers ──
     function _getBaseURL(providerId) {
         const p = PROVIDERS[providerId];
         if (!p) return '';
@@ -70,7 +70,7 @@ const AiAssistant = (() => {
         return `http://${ip}:${port}/v1`;
     }
 
-    // ── HTTP helpers ─────────────────────────────────────────────────────
+    // ── HTTP helpers ──
     async function _parseError(res, label) {
         let detail = res.statusText || 'Unknown error';
         try {
@@ -164,7 +164,7 @@ const AiAssistant = (() => {
         }
     }
 
-    // ── List models ──────────────────────────────────────────────────────
+    // ── List models ──
     async function _listModels(providerId, apiKey, localOverrideURL) {
         const p       = PROVIDERS[providerId];
         const baseURL = localOverrideURL || _getBaseURL(providerId);
@@ -251,7 +251,7 @@ const AiAssistant = (() => {
         }
     }
 
-    // ── Build system/user prompt ─────────────────────────────────────────
+    // ── Build system/user prompt ──
     function _buildMessages(outputText) {
         const recipeContext = _buildRecipeContext();
         const systemMsg = `You are an expert SIEM engineer and threat detection specialist with deep knowledge of Sigma rules and SIEM query languages including Splunk SPL, Elastic EQL/Lucene, Microsoft Sentinel KQL, Cortex XDR XQL, SentinelOne Deep Visibility, Carbon Black, Velociraptor VQL, IBM QRadar AQL, Chronicle UDM, and others.`;
@@ -276,7 +276,7 @@ const AiAssistant = (() => {
         ];
     }
 
-    // ── Validation ───────────────────────────────────────────────────────
+    // ── Validation ──
     function _validate() {
         const p = PROVIDERS[_cfg.provider];
         if (!p) return 'Unknown provider selected.';
@@ -289,7 +289,7 @@ const AiAssistant = (() => {
         return null;
     }
 
-    // ── Run AI Query ─────────────────────────────────────────────────────
+    // ── Run AI Query ──
     async function runQuery(outputText) {
         const err = _validate();
         if (err) { _showError(err); return; }
@@ -318,7 +318,7 @@ const AiAssistant = (() => {
         }
     }
 
-    // ── UI: Config Modal ─────────────────────────────────────────────────
+    // ── UI: Config Modal ──
     function openConfigModal() {
         _loadConfig();
         const overlay = document.getElementById('ai-config-overlay');
@@ -445,7 +445,7 @@ const AiAssistant = (() => {
         if (modelInput) modelInput.setAttribute('list', 'ai-model-datalist');
     }
 
-    // ── UI: Response Modal ───────────────────────────────────────────────
+    // ── UI: Response Modal ──
     function _showResponseModal(text, loading, originalOutput, errorMsg) {
         const overlay   = document.getElementById('ai-response-overlay');
         const bodyEl    = document.getElementById('ai-response-body');
@@ -503,7 +503,7 @@ const AiAssistant = (() => {
         setTimeout(() => { overlay.style.display = 'none'; }, 200);
     }
 
-    // ── Very simple Markdown renderer (bold, code blocks, lists) ─────────
+    // ── Very simple Markdown renderer (bold, code blocks, lists) ──
     function _renderMarkdown(text) {
         if (!text) return '';
 
@@ -551,7 +551,7 @@ const AiAssistant = (() => {
         return result.join('');
     }
 
-    // ── Extract code block from AI review response to apply ──────────────
+    // ── Extract code block from AI review response to apply ──
     function _extractCodeFromResponse(text) {
         // Find the first fenced code block
         const match = text.match(/```[^\n]*\n([\s\S]*?)```/);
@@ -602,7 +602,7 @@ const AiAssistant = (() => {
         closeResponseModal();
     }
 
-    // ── Error snackbar ────────────────────────────────────────────────────
+    // ── Error snackbar ──
     function _showError(msg) {
         // Reuse the app's setStatus if available, else alert
         if (typeof App !== 'undefined' && App.setStatus) {
@@ -616,7 +616,7 @@ const AiAssistant = (() => {
         }
     }
 
-    // ── Init ─────────────────────────────────────────────────────────────
+    // ── Init ──
     function init() {
         _loadConfig();
 

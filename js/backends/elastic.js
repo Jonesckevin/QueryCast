@@ -19,7 +19,7 @@ class ElasticLuceneBackend extends BaseBackend {
         this.addComments = options.addComments !== false;
     }
 
-    // ── Logsource header ───────────────────────────────────────────────
+    // ── Logsource header ──
     buildHeader(sigmaRule) {
         if (!this.addComments) return '';
         const lines = [];
@@ -33,12 +33,12 @@ class ElasticLuceneBackend extends BaseBackend {
         return lines.join('\n');
     }
 
-    // ── Field mapping ──────────────────────────────────────────────────
+    // ── Field mapping ──
     _mapField(fieldName, logsource) {
         return FieldMaps.mapField(fieldName, logsource, 'elastic', true);
     }
 
-    // ── Build a complete field condition ────────────────────────
+    // ── Build a complete field condition ──
     buildFieldCondition(node, logsource) {
         const mappedField = this._mapField(node.field, logsource);
         if (mappedField === null) {
@@ -126,19 +126,19 @@ class ElasticLuceneBackend extends BaseBackend {
         return String(value).replace(/\//g, '\\/');
     }
 
-    // ── Keyword search ─────────────────────────────────────────────────
+    // ── Keyword search ──
     buildKeywords(values, logsource) {
         const escaped = values.map(v => `"${this._escapeLucenePhraseValue(v)}"`);
         return escaped.length === 1 ? escaped[0] : `(${escaped.join(' OR ')})`;
     }
 
-    // ── Logical operators ──────────────────────────────────────────────
+    // ── Logical operators ──
     andExpr(a, b)  { return `(${a} AND ${b})`; }
     orExpr(a, b)   { return `(${a} OR ${b})`; }
     notExpr(a)     { return `NOT ${a}`; }
     wrapGroup(a)   { return `(${a})`; }
 
-    // ── Reverse: Elastic Lucene → Sigma YAML ─────────────────────────
+    // ── Reverse: Elastic Lucene → Sigma YAML ──
     /**
      * Parse an Elasticsearch Lucene query string and return a Sigma YAML rule.
      * Reuses QueryParser (same Lucene-style AST used by the CB reverse parser).

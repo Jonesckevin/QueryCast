@@ -7,9 +7,9 @@
 
 const SigmaParser = (() => {
 
-    // ────────────────────────────────────────────────────────────
+    // ──
     // Condition string tokenizer
-    // ────────────────────────────────────────────────────────────
+    // ──
     function tokenize(conditionStr) {
         const tokens = [];
         const str = conditionStr.trim();
@@ -41,7 +41,7 @@ const SigmaParser = (() => {
         return tokens;
     }
 
-    // ────────────────────────────────────────────────────────────
+    // ──
     // Condition expression parser → AST
     // Grammar:
     //   expr   := term ( 'or' term )*
@@ -49,7 +49,7 @@ const SigmaParser = (() => {
     //   factor := 'not' factor | atom
     //   atom   := '(' expr ')' | quantifier | identifier
     //   quantifier := ( NUMBER | 'all' ) 'of' PATTERN
-    // ────────────────────────────────────────────────────────────
+    // ──
     function parseCondition(conditionStr, detectionKeys) {
         const tokens = tokenize(conditionStr);
         let pos = 0;
@@ -128,17 +128,17 @@ const SigmaParser = (() => {
         return parseExpr();
     }
 
-    // ────────────────────────────────────────────────────────────
+    // ──
     // Glob/wildcard matching for quantifier patterns like "selection*"
-    // ────────────────────────────────────────────────────────────
+    // ──
     function matchesWildcard(str, pattern) {
         const regexStr = '^' + pattern.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*') + '$';
         return new RegExp(regexStr).test(str);
     }
 
-    // ────────────────────────────────────────────────────────────
+    // ──
     // Parse a field key like "Image|endswith|all" into parts
-    // ────────────────────────────────────────────────────────────
+    // ──
     function parseFieldKey(key) {
         const parts = key.split('|');
         return {
@@ -147,14 +147,14 @@ const SigmaParser = (() => {
         };
     }
 
-    // ────────────────────────────────────────────────────────────
+    // ──
     // Parse one detection identifier block
     // Can be:
     //   - Object: { Image|endswith: [...], CommandLine|contains: '...' }
     //   - List of strings (keyword search)
     //   - List of objects (OR between objects)
     //   - A scalar string or number (single keyword)
-    // ────────────────────────────────────────────────────────────
+    // ──
     function parseDetectionIdentifier(content) {
         if (content === null || content === undefined) return null;
 
@@ -186,9 +186,9 @@ const SigmaParser = (() => {
         return null;
     }
 
-    // ────────────────────────────────────────────────────────────
+    // ──
     // Parse a field-value object (all fields AND'd together)
-    // ────────────────────────────────────────────────────────────
+    // ──
     function parseFieldValueObject(obj) {
         const conditions = [];
 
@@ -218,9 +218,9 @@ const SigmaParser = (() => {
         return { type: 'and_conditions', conditions };
     }
 
-    // ────────────────────────────────────────────────────────────
+    // ──
     // Main entry point: parse a Sigma YAML string
-    // ────────────────────────────────────────────────────────────
+    // ──
     function parseSigmaRule(yamlText) {
         if (typeof jsyaml === 'undefined') {
             throw new Error('js-yaml library not loaded. Please include it before sigma-parser.js.');
@@ -292,9 +292,9 @@ const SigmaParser = (() => {
         };
     }
 
-    // ────────────────────────────────────────────────────────────
+    // ──
     // Describe the rule summary (for UI display)
-    // ────────────────────────────────────────────────────────────
+    // ──
     function summarize(sigmaRule) {
         const ls = sigmaRule.logsource;
         const lsStr = [ls.product, ls.category || ls.service].filter(Boolean).join('/');

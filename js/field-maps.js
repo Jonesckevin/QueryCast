@@ -18,7 +18,7 @@
 
 const FieldMaps = (() => {
 
-    // ── Windows: Process Creation ────────────────────────────────────────
+    // ── Windows: Process Creation ──
     // Sysmon Event ID 1 / Windows Security Event 4688
     const PROCESS_CREATION = {
         'EventID':              { splunk: 'EventCode',         elastic: 'event.code',                       kql_sec: 'EventID',          kql_dev: null,                               cb: null,           vql: 'EventID',          s1: 'EventId',               xql: null,                                   udm: null },
@@ -42,7 +42,7 @@ const FieldMaps = (() => {
         'LogonId':              { splunk: 'LogonId',           elastic: 'winlog.event_data.LogonId',        kql_sec: 'SubjectLogonId',   kql_dev: 'LogonId',                          cb: null,           vql: 'LogonId',          s1: null,                    xql: null,                                   udm: null },
     };
 
-    // ── Windows: Network Connection ──────────────────────────────────────
+    // ── Windows: Network Connection ──
     // Sysmon Event ID 3
     const NETWORK_CONNECTION = {
         'EventID':              { splunk: 'EventCode',    elastic: 'event.code',           kql_sec: 'EventID',  kql_dev: null,                              cb: null,             vql: 'EventID',          s1: 'EventId',        xql: null,                    udm: null },
@@ -59,7 +59,7 @@ const FieldMaps = (() => {
         'Initiated':            { splunk: 'Initiated',    elastic: 'network.direction',    kql_sec: null,       kql_dev: null,                              cb: null,             vql: 'Initiated',        s1: null,               xql: null,                        udm: null },
     };
 
-    // ── Windows: File Event / File Creation ──────────────────────────────
+    // ── Windows: File Event / File Creation ──
     // Sysmon Event IDs 11, 23, 26
     const FILE_EVENT = {
         'EventID':          { splunk: 'EventCode',       elastic: 'event.code',           kql_sec: 'EventID',  kql_dev: null,                               cb: null,           vql: 'EventID',       s1: 'EventId',        xql: null,                   udm: null },
@@ -71,7 +71,7 @@ const FieldMaps = (() => {
         'ComputerName':     { splunk: 'ComputerName',    elastic: 'host.name',            kql_sec: 'Computer', kql_dev: 'DeviceName',                       cb: 'hostname',     vql: 'Computer',      s1: 'EndpointName',   xql: 'agent_hostname',           udm: 'principal.hostname' },
     };
 
-    // ── Windows: Registry Event ──────────────────────────────────────────
+    // ── Windows: Registry Event ──
     // Sysmon Event IDs 12, 13, 14
     const REGISTRY_EVENT = {
         'EventID':        { splunk: 'EventCode',    elastic: 'event.code',             kql_sec: 'EventID',  kql_dev: null,                               cb: null,           vql: 'EventID',       s1: 'EventId',         xql: null,                      udm: null },
@@ -82,7 +82,7 @@ const FieldMaps = (() => {
         'ComputerName':   { splunk: 'ComputerName', elastic: 'host.name',              kql_sec: 'Computer', kql_dev: 'DeviceName',                       cb: 'hostname',     vql: 'Computer',      s1: 'EndpointName',    xql: 'agent_hostname',          udm: 'principal.hostname' },
     };
 
-    // ── Windows: Security Event Log ──────────────────────────────────────
+    // ── Windows: Security Event Log ──
     const WINDOWS_SECURITY = {
         'EventID':           { splunk: 'EventCode',         elastic: 'event.code',                       kql_sec: 'EventID',          kql_dev: null,  cb: null,       vql: 'EventID',          s1: 'EventId',      xql: null,  udm: null },
         'SubjectUserName':   { splunk: 'SubjectUserName',   elastic: 'user.name',                        kql_sec: 'SubjectUserName',  kql_dev: null,  cb: 'username', vql: 'SubjectUserName',  s1: 'UserName',     xql: null,  udm: 'principal.user.userid' },
@@ -100,7 +100,7 @@ const FieldMaps = (() => {
         'PrivilegeList':     { splunk: 'PrivilegeList',     elastic: 'winlog.event_data.PrivilegeList',  kql_sec: 'PrivilegeList',    kql_dev: null,  cb: null,       vql: 'PrivilegeList',    s1: null,           xql: null,  udm: null },
     };
 
-    // ── Windows: DNS Query ───────────────────────────────────────────────
+    // ── Windows: DNS Query ──
     const DNS_QUERY = {
         'QueryName':    { splunk: 'QueryName',    elastic: 'dns.question.name', kql_sec: null, kql_dev: 'RemoteUrl',                            cb: 'netconn_domain', vql: 'QueryName',    s1: 'Dns.Request',  xql: 'action_dns_query_name',   udm: 'network.dns.questions.name' },
         'QueryType':    { splunk: 'QueryType',    elastic: 'dns.question.type', kql_sec: null, kql_dev: null,                                   cb: null,             vql: 'QueryType',    s1: null,           xql: null,                      udm: 'network.dns.questions.type' },
@@ -110,7 +110,7 @@ const FieldMaps = (() => {
         'ComputerName': { splunk: 'ComputerName', elastic: 'host.name',          kql_sec: 'Computer', kql_dev: 'DeviceName',                    cb: 'hostname',       vql: 'Computer',     s1: 'EndpointName', xql: 'agent_hostname',          udm: 'principal.hostname' },
     };
 
-    // ── Windows: Image Load ──────────────────────────────────────────────
+    // ── Windows: Image Load ──
     const IMAGE_LOAD = {
         'EventID':         { splunk: 'EventCode',      elastic: 'event.code',                kql_sec: 'EventID', kql_dev: null,                               cb: null,       vql: 'EventID',      s1: 'EventId',      xql: null,                   udm: null },
         'Image':           { splunk: 'Image',          elastic: 'process.executable',        kql_sec: null,      kql_dev: 'InitiatingProcessFolderPath',      cb: 'process_name', vql: 'Image',      s1: 'SrcProcImagePath', xql: 'actor_process_image_path', udm: 'principal.process.file.full_path' },
@@ -121,7 +121,7 @@ const FieldMaps = (() => {
         'ComputerName':    { splunk: 'ComputerName',   elastic: 'host.name',                 kql_sec: 'Computer', kql_dev: 'DeviceName',                      cb: 'hostname', vql: 'Computer',     s1: 'EndpointName', xql: 'agent_hostname',       udm: 'principal.hostname' },
     };
 
-    // ── KQL table selection for each logsource ──────────────────────────
+    // ── KQL table selection for each logsource ──
     // Returns { securityEvent, defenderTable } strings
     const KQL_TABLES = {
         'windows/process_creation': {
@@ -256,7 +256,7 @@ const FieldMaps = (() => {
         },
     };
 
-    // ── Velociraptor artifact mapping ────────────────────────────────────
+    // ── Velociraptor artifact mapping ──
     const VQL_ARTIFACTS = {
         'windows/process_creation':    'Windows.EventLogs.Evtx(EvtxGlob="C:/Windows/System32/winevt/Logs/Security.evtx")',
         'windows/sysmon/process_creation': 'Windows.EventLogs.Evtx(EvtxGlob="C:/Windows/System32/winevt/Logs/Microsoft-Windows-Sysmon%4Operational.evtx")',
@@ -288,9 +288,9 @@ const FieldMaps = (() => {
         'linux/network_connection':    'Linux.Network.Netstat',
     };
 
-    // ────────────────────────────────────────────────────────────────────
+    // ──
     // Public API
-    // ────────────────────────────────────────────────────────────────────
+    // ──
     function getLogsourceKey(logsource) {
         const product  = (logsource.product  || '').toLowerCase();
         const category = (logsource.category || '').toLowerCase();

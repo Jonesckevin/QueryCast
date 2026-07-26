@@ -21,7 +21,7 @@ class KqlBackend extends BaseBackend {
         this.addComments = options.addComments !== false;
     }
 
-    // ── Logsource header: KQL table + where clauses ────────────────────
+    // ── Logsource header: KQL table + where clauses ──
     buildHeader(sigmaRule) {
         const useDefender = this.platform === 'defender';
         const table = FieldMaps.getKqlTable(sigmaRule.logsource, useDefender);
@@ -45,7 +45,7 @@ class KqlBackend extends BaseBackend {
         return commentBlock + `${placeholder}  // Unknown logsource: manually specify table`;
     }
 
-    // ── Field mapping ──────────────────────────────────────────────────
+    // ── Field mapping ──
     _mapField(fieldName, logsource) {
         const backend = this.platform === 'defender' ? 'kql_dev' : 'kql_sec';
         const mapped = FieldMaps.mapField(fieldName, logsource, backend, true);
@@ -57,7 +57,7 @@ class KqlBackend extends BaseBackend {
         return mapped; // null → field not supported in either KQL variant
     }
 
-    // ── Build a complete field condition ──────────────────────────────
+    // ── Build a complete field condition ──
     buildFieldCondition(node, logsource) {
         const mappedField = this._mapField(node.field, logsource);
         if (mappedField === null) return null; // unsupported field – caller will skip and warn
@@ -177,7 +177,7 @@ class KqlBackend extends BaseBackend {
             .replace(/\?/g, '.');
     }
 
-    // ── Keyword search ─────────────────────────────────────────────────
+    // ── Keyword search ──
     buildKeywords(values, logsource) {
         // KQL doesn't have a true full-text keyword search across all fields.
         // Emit a search-like expression or a comment noting manual review needed.
@@ -188,7 +188,7 @@ class KqlBackend extends BaseBackend {
         return `(${clauses.join(' or ')})`;
     }
 
-    // ── Logical operators ──────────────────────────────────────────────
+    // ── Logical operators ──
     andExpr(a, b)  {
         // Wrap multi-line a/b in parens for clarity
         return `${a}\n| where ${b}`;
@@ -198,7 +198,7 @@ class KqlBackend extends BaseBackend {
     notExpr(a)     { return `not (${a})`; }
     wrapGroup(a)   { return `(${a})`; }
 
-    // ── Override to produce pipe-based KQL output ──────────────────────
+    // ── Override to produce pipe-based KQL output ──
     convert(sigmaRule) {
         const header = this.buildHeader(sigmaRule);
         const body   = this._buildWhereClause(sigmaRule);
@@ -279,7 +279,7 @@ class KqlBackend extends BaseBackend {
         }
     }
 
-    // ── Reverse parser: KQL → Sigma ───────────────────────────────────
+    // ── Reverse parser: KQL → Sigma ──
     static parseQueryToSigma(kqlQuery) {
         if (!kqlQuery || typeof kqlQuery !== 'string') return '';
 

@@ -21,7 +21,7 @@ class BaseBackend {
         this.options = options;
     }
 
-    // ── Main entry point ────────────────────────────────────────────────
+    // ── Main entry point ──
     convert(sigmaRule) {
         // Reset per-conversion tracking
         this._skippedFields = [];
@@ -53,7 +53,7 @@ class BaseBackend {
         return parts.join('\n');
     }
 
-    // ── Walk the condition AST and produce query string ─────────────────
+    // ── Walk the condition AST and produce query string ──
     _resolveConditionAst(node, sigmaRule) {
         switch (node.type) {
 
@@ -115,7 +115,7 @@ class BaseBackend {
         return op === 'and' ? this.andExpr(left, right) : this.orExpr(left, right);
     }
 
-    // ── Resolve a detection identifier node ─────────────────────────────
+    // ── Resolve a detection identifier node ──
     _resolveIdentifier(node, sigmaRule) {
         if (!node) return '';
 
@@ -159,7 +159,7 @@ class BaseBackend {
         }
     }
 
-    // ─── Default implementations (override in subclasses as needed) ──────
+    // ── Default implementations (override in subclasses as needed) ──
 
     buildHeader(sigmaRule)  { return ''; }
     buildFooter(sigmaRule)  { return ''; }
@@ -180,7 +180,7 @@ class BaseBackend {
 
     _makeComment(text) { return `/* ${text} */`; }
 
-    // ─── Helper: build a single field=value pair from modifiers ──────────
+    // ── Helper: build a single field=value pair from modifiers ──
     // Returns an array of raw value expressions (before OR-joining)
     _applyModifiers(rawValues, modifiers, logsource) {
         // modifiers is an array like ['contains'], ['startswith'], ['endswith'], ['re'], ['cidr']

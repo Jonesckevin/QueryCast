@@ -22,7 +22,7 @@ class CarbonBlackBackend extends BaseBackend {
         this.allowLeadingWildcards = options.allowLeadingWildcards === true;
     }
 
-    // ── Logsource header ───────────────────────────────────────────────
+    // ── Logsource header ──
     buildHeader(sigmaRule) {
         if (!this.addComments) return '';
         const lines = [];
@@ -33,12 +33,12 @@ class CarbonBlackBackend extends BaseBackend {
         return lines.join('\n');
     }
 
-    // ── Field mapping ──────────────────────────────────────────────────
+    // ── Field mapping ──
     _mapField(fieldName, logsource) {
         return FieldMaps.mapField(fieldName, logsource, 'cb', true);
     }
 
-    // ── Build a complete field condition ────────────────────────
+    // ── Build a complete field condition ──
     buildFieldCondition(node, logsource) {
         const mappedField = this._mapField(node.field, logsource);
         if (mappedField === null) {
@@ -143,13 +143,13 @@ class CarbonBlackBackend extends BaseBackend {
         }
     }
 
-    // ── Keyword search ─────────────────────────────────────────────────
+    // ── Keyword search ──
     buildKeywords(values, logsource) {
         const escaped = values.map(v => `"${String(v).replace(/"/g, '\\"')}"`);
         return escaped.length === 1 ? escaped[0] : `(${escaped.join(' OR ')})`;
     }
 
-    // ── Logical operators ──────────────────────────────────────────────
+    // ── Logical operators ──
     andExpr(a, b)  { return `${a} AND ${b}`; }
     orExpr(a, b)   { return `(${a} OR ${b})`; }
     notExpr(a)     { return `-${a}`; }
@@ -282,7 +282,7 @@ class CarbonBlackBackend extends BaseBackend {
 
     _makeComment(text) { return `/* ${text} */`; }
 
-    // ── Reverse parser: Carbon Black → Sigma ──────────────────────────
+    // ── Reverse parser: Carbon Black → Sigma ──
     /**
      * Parse a Carbon Black EDR/Cloud query and convert it back to a Sigma rule.
      * @param {string} cbQuery - Carbon Black query string (e.g., "process_name:\\powershell.exe AND ...")

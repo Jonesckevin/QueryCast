@@ -1,0 +1,8 @@
+.github/*
+!.github/workflows/
+!.github/workflows/**
+
+# Environment secrets — never commit real values
+.env
+
+dockerupload.gitignore

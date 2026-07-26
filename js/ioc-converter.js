@@ -7,7 +7,7 @@
 
 const IocConverter = (() => {
 
-    // ── IOC type definitions ────────────────────────────────────────────
+    // ── IOC type definitions ──
     const TYPES = {
         ipv4:      { label: 'IPv4 Address',    icon: 'bi-hdd-network',       color: '#ff6b6b', sigmaField: 'DestinationIp',   modifier: null,       logsource: { product: 'windows', category: 'network_connection' } },
         ipv6:      { label: 'IPv6 Address',    icon: 'bi-hdd-network',       color: '#ff8787', sigmaField: 'DestinationIp',   modifier: null,       logsource: { product: 'windows', category: 'network_connection' } },
@@ -43,7 +43,7 @@ const IocConverter = (() => {
         useragent: 'useragent', ua: 'useragent',
     };
 
-    // ── Detection engine ────────────────────────────────────────────────
+    // ── Detection engine ──
 
     /**
      * Detect IOC type from a plain value string.
@@ -132,7 +132,7 @@ const IocConverter = (() => {
         return { type: null, confidence: 0, alternatives: ['ipv4', 'domain', 'filename', 'cmdline', 'cmdline'] };
     }
 
-    // ── Line / CSV parser ───────────────────────────────────────────────
+    // ── Line / CSV parser ──
 
     function parseLine(raw) {
         const line = raw.trim();
@@ -255,7 +255,7 @@ const IocConverter = (() => {
         return g;
     }
 
-    // ── Sigma YAML generation ───────────────────────────────────────────
+    // ── Sigma YAML generation ──
 
     function generateUUID() {
         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
@@ -340,13 +340,13 @@ const IocConverter = (() => {
         return lines.join('\n');
     }
 
-    // ── Modal state ─────────────────────────────────────────────────────
+    // ── Modal state ──
     let _entries   = [];
     let _overrides = {}; // index → type override
     let _onLoad    = null;
     let _debounce  = null;
 
-    // ── Modal management ────────────────────────────────────────────────
+    // ── Modal management ──
 
     function init(onLoadRule) {
         _onLoad = onLoadRule;
@@ -627,7 +627,7 @@ const IocConverter = (() => {
             .replace(/"/g, '&quot;');
     }
 
-    // ── Public API ──────────────────────────────────────────────────────
+    // ── Public API ──
     return {
         TYPES,
         PREFIX_MAP,

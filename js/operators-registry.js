@@ -826,15 +826,15 @@ const OperatorsRegistry = (() => {
         }
     }
 
-    // ────────────────────────────────────────────────────────────────────
+    // ──
     // Operator definitions
     // Each operator has:
     //   id, name, category, icon, description, inputFormat, outputFormat,
     //   options (array of config items), run(input, options) → string
-    // ────────────────────────────────────────────────────────────────────
+    // ──
     const operators = [
 
-        // ── Parse / Inspect ──────────────────────────────────────────────
+        // ── Parse / Inspect ──
         {
             id: 'sigma-inspect',
             name: 'Inspect Rule',
@@ -870,7 +870,7 @@ const OperatorsRegistry = (() => {
             }
         },
 
-        // ── Sigma → Splunk SPL ───────────────────────────────────────────
+        // ── Sigma → Splunk SPL ──
         {
             id: 'sigma-to-splunk',
             name: 'Splunk SPL',
@@ -897,7 +897,7 @@ const OperatorsRegistry = (() => {
             }
         },
 
-        // ── Sigma → Elastic Lucene ───────────────────────────────────────
+        // ── Sigma → Elastic Lucene ──
         {
             id: 'sigma-to-elastic',
             name: 'Elastic Lucene',
@@ -924,7 +924,7 @@ const OperatorsRegistry = (() => {
             }
         },
 
-        // ── Sigma → Microsoft Sentinel KQL ──────────────────────────────
+        // ── Sigma → Microsoft Sentinel KQL ──
         {
             id: 'sigma-to-kql-sentinel',
             name: 'Sentinel KQL',
@@ -962,7 +962,7 @@ const OperatorsRegistry = (() => {
             }
         },
 
-        // ── Sigma → Carbon Black ─────────────────────────────────────────
+        // ── Sigma → Carbon Black ──
         {
             id: 'sigma-to-cb',
             name: 'Carbon Black',
@@ -1007,7 +1007,7 @@ const OperatorsRegistry = (() => {
             }
         },
 
-        // ── Sigma → Velociraptor VQL ─────────────────────────────────────
+        // ── Sigma → Velociraptor VQL ──
         {
             id: 'sigma-to-vql',
             name: 'Velociraptor VQL',
@@ -1640,7 +1640,7 @@ const OperatorsRegistry = (() => {
                 return _toSigmaFromQuery(input, 'sysmonxml');
             }
         },
-        // ── Sigma → Rapid7 InsightIDR LEQL ──────────────────────────
+        // ── Sigma → Rapid7 InsightIDR LEQL ──
         {
             id: 'sigma-to-rapid7',
             name: 'Rapid7 InsightIDR',
@@ -1657,7 +1657,7 @@ const OperatorsRegistry = (() => {
                 return backend.convert(rule);
             }
         },
-        // ── Sigma → Anomali ThreatStream ────────────────────────────
+        // ── Sigma → Anomali ThreatStream ──
         {
             id: 'sigma-to-anomali',
             name: 'Anomali ThreatStream',
@@ -1674,7 +1674,7 @@ const OperatorsRegistry = (() => {
                 return backend.convert(rule);
             }
         },
-        // ── Sigma → Logger (Sumo-style) ────────────────────────────
+        // ── Sigma → Logger (Sumo-style) ──
         {
             id: 'sigma-to-logger',
             name: 'Logger (Sumo-style)',
@@ -1691,7 +1691,7 @@ const OperatorsRegistry = (() => {
                 return backend.convert(rule);
             }
         },
-        // ── Sigma → ElastAlert Lucene ──────────────────────────────
+        // ── Sigma → ElastAlert Lucene ──
         {
             id: 'sigma-to-elastalert',
             name: 'ElastAlert Lucene',
@@ -1708,7 +1708,7 @@ const OperatorsRegistry = (() => {
                 return backend.convert(rule);
             }
         },
-        // ── Sigma → FortiSIEM ───────────────────────────────────────
+        // ── Sigma → FortiSIEM ──
         {
             id: 'sigma-to-fortisiem',
             name: 'FortiSIEM',
@@ -1725,7 +1725,7 @@ const OperatorsRegistry = (() => {
                 return backend.convert(rule);
             }
         },
-        // ── Sigma → Tanium ──────────────────────────────────────────
+        // ── Sigma → Tanium ──
         {
             id: 'sigma-to-tanium',
             name: 'Tanium',
@@ -1742,7 +1742,7 @@ const OperatorsRegistry = (() => {
                 return backend.convert(rule);
             }
         },
-        // ── Rapid7 → Sigma ──────────────────────────────────────────
+        // ── Rapid7 → Sigma ──
         {
             id: 'rapid7-to-sigma',
             name: 'To Sigma',
@@ -1757,7 +1757,7 @@ const OperatorsRegistry = (() => {
                 return _toSigmaFromQuery(input, 'rapid7');
             }
         },
-        // ── Anomali → Sigma ─────────────────────────────────────────
+        // ── Anomali → Sigma ──
         {
             id: 'anomali-to-sigma',
             name: 'To Sigma',
@@ -1772,7 +1772,7 @@ const OperatorsRegistry = (() => {
                 return _toSigmaFromQuery(input, 'anomali');
             }
         },
-        // ── Logger → Sigma ──────────────────────────────────────────
+        // ── Logger → Sigma ──
         {
             id: 'logger-to-sigma',
             name: 'To Sigma',
@@ -1787,7 +1787,7 @@ const OperatorsRegistry = (() => {
                 return _toSigmaFromQuery(input, 'logger');
             }
         },
-        // ── ElastAlert → Sigma ──────────────────────────────────────
+        // ── ElastAlert → Sigma ──
         {
             id: 'elastalert-to-sigma',
             name: 'To Sigma',
@@ -1802,7 +1802,7 @@ const OperatorsRegistry = (() => {
                 return _toSigmaFromQuery(input, 'elastalert');
             }
         },
-        // ── FortiSIEM → Sigma ───────────────────────────────────────
+        // ── FortiSIEM → Sigma ──
         {
             id: 'fortisiem-to-sigma',
             name: 'To Sigma',
@@ -1817,7 +1817,7 @@ const OperatorsRegistry = (() => {
                 return _toSigmaFromQuery(input, 'fortisiem');
             }
         },
-        // ── Tanium → Sigma ──────────────────────────────────────────
+        // ── Tanium → Sigma ──
         {
             id: 'tanium-to-sigma',
             name: 'To Sigma',
@@ -1834,7 +1834,7 @@ const OperatorsRegistry = (() => {
         },
     ];
 
-    // ── Category metadata ────────────────────────────────────────────────
+    // ── Category metadata ──
     const categories = [
         { id: 'parse',   label: 'Parse & Inspect',  icon: 'bi-search',       color: '#868e96' },
         { id: 'convert', label: 'Convert to SIEM',  icon: 'bi-arrow-left-right', color: '#4dabf7' },
@@ -1873,7 +1873,7 @@ const OperatorsRegistry = (() => {
         tanium: 'Tanium Query',
     };
 
-    // ── Public API ───────────────────────────────────────────────────────
+    // ── Public API ──
     function getAll()       { return operators; }
     function getById(id)    { return operators.find(o => o.id === id); }
     function getByCategory(cat) { return operators.filter(o => o.category === cat); }

@@ -20,7 +20,7 @@ const SigmaDB = (() => {
 
     let _db = null;
 
-    // ── IndexedDB open ──────────────────────────────────────────────────
+    // ── IndexedDB open ──
     function openDB() {
         if (_db) return Promise.resolve(_db);
 
@@ -88,7 +88,7 @@ const SigmaDB = (() => {
         });
     }
 
-    // ── Download ────────────────────────────────────────────────────────
+    // ── Download ──
 
     /**
      * Download all Sigma rules from SigmaHQ/sigma on GitHub.
@@ -243,7 +243,7 @@ const SigmaDB = (() => {
         };
     }
 
-    // ── Search ──────────────────────────────────────────────────────────
+    // ── Search ──
 
     /**
      * Search stored rules.
@@ -286,7 +286,7 @@ const SigmaDB = (() => {
         return scored.slice(0, limit).map(s => s.rule);
     }
 
-    // ── Meta ────────────────────────────────────────────────────────────
+    // ── Meta ──
 
     async function getMeta() {
         try {
@@ -322,7 +322,7 @@ const SigmaDB = (() => {
         });
     }
 
-    // ── Public API ──────────────────────────────────────────────────────
+    // ── Public API ──
     return { download, search, getMeta, getCount, reset };
 
 })();

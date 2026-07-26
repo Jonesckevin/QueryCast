@@ -53,13 +53,13 @@ docker-compose up --build
 ### Docker Run
 ```bash
 docker build -t querycast:latest .
-docker run -d -p 4007:8080 --name querycast querycast:latest
+docker run -d -p 9013:8080 --name querycast querycast:latest
 ```
 
 ### Docker Hub Pull
 ```bash
 docker pull jonesckevin/querycast:latest
-docker run -d -p 4007:8080 --name querycast jonesckevin/querycast:latest
+docker run -d -p 9013:8080 --name querycast jonesckevin/querycast:latest
 ```
 
-Then open http://localhost:4007.
+Then open http://localhost:9013
