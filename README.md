@@ -2,6 +2,8 @@
 
 Fast offline web tool to convert Sigma rules and SIEM queries across multiple SIEM platforms and EDR tools.
 
+![Example](example.png)
+
 ## Features
 | Feature | Description |
 | --- | --- |
