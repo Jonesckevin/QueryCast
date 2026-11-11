@@ -1,6 +1,8 @@
 # QueryCast Frontend — nginx static file server (hardened, non-root)
 FROM nginx:alpine
 
+RUN apk upgrade --no-cache
+
 # ── Non-root user (UID/GID 1000) ──
 # Running nginx as a non-root user eliminates container privilege-escalation risk.
 # Port 8080 is used because ports <1024 require CAP_NET_BIND_SERVICE as root.
@@ -35,6 +37,6 @@ USER appuser
 EXPOSE 8080
 
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-    CMD wget --quiet --tries=1 --spider http://localhost:8080/index.html || exit 1
+    CMD wget --quiet --tries=1 --spider http://127.0.0.1:8080/index.html || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]

@@ -18,11 +18,18 @@ services:
     security_opt:
       - no-new-privileges:true
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/index.html"]
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8080/index.html"]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 5s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1G
+          pids: 512
+
 
   # ── Backend: Flask API (JWT auth, rate limiting, WebSocket, file upload) ──
   querycast-api:
@@ -47,6 +54,12 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 256M
+          pids: 512
 
 # ── Persistent volume (database-style storage with controlled permissions) ──
 volumes:

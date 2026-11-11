@@ -1173,7 +1173,6 @@ level: high`;
     return { init };
 })();
 
-// Bootstrap
 document.addEventListener('DOMContentLoaded', App.init);
 
 function querycastSigmaHelpTemplateText() {
@@ -1217,7 +1216,6 @@ window.querycastSigmaHelpLoadTemplate = function querycastSigmaHelpLoadTemplate(
     window.querycastSigmaHelpClose();
 };
 
-// Fallback Sigma Help controls: ensures modal works even if init-time bindings are skipped.
 document.addEventListener('click', e => {
     const trigger = e.target?.closest?.(
         '#btn-sigma-help, #sigma-help-close, #sigma-help-close-footer, #sigma-help-load-template'
